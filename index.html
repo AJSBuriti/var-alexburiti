@@ -103,6 +103,14 @@
       gap: 2rem;
       list-style: none;
       align-items: center;
+      /* Desktop: posiciona dentro da barra do nav */
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 72px;
+      z-index: 101;
+      pointer-events: auto;
     }
     .nav-links a {
       color: var(--sand);
@@ -936,31 +944,32 @@
 
       /* ── MENU MOBILE — solução definitiva iOS Safari ── */
       .nav-links {
-        display: flex !important;          /* sempre no DOM, nunca display:none */
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 200;
-        background: #12100E;             /* sólido, sem transparência */
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 2.5rem;
+        /* Anula o posicionamento de desktop */
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        transform: translateX(100%) !important;   /* fora da tela quando fechado */
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        -webkit-transition: -webkit-transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        will-change: transform;
+        z-index: 200 !important;
+        background: #12100E !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 2.5rem !important;
+        pointer-events: none !important;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        /* fora da tela à direita quando fechado */
-        transform: translateX(100%);
-        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        -webkit-transition: -webkit-transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        will-change: transform;
-        pointer-events: none;
       }
       .nav-links.open {
-        transform: translateX(0);
-        -webkit-transform: translateX(0);
-        pointer-events: auto;
+        transform: translateX(0) !important;
+        -webkit-transform: translateX(0) !important;
+        pointer-events: auto !important;
       }
       .nav-links a {
         color: #F5F0E8 !important;
@@ -972,7 +981,6 @@
         color: #D4A84B !important;
         border-color: #D4A84B !important;
         padding: 0.7rem 2.5rem !important;
-        font-size: 0.9rem !important;
       }
       .nav-backdrop { z-index: 190; }
       .nav-burger { display: flex; z-index: 210; }
@@ -1085,20 +1093,22 @@
       <img src="IconAlex.png" alt="Ícone Alex Buriti" class="nav-icon" />
       Alex <span>Buriti</span>
     </a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="javascript:void(0)" onclick="navTo('sobre')">Sobre</a></li>
-      <li><a href="javascript:void(0)" onclick="navTo('metodo')">Método VAR</a></li>
-      <li><a href="javascript:void(0)" onclick="navTo('servicos')">Serviços</a></li>
-      <li><a href="javascript:void(0)" onclick="navTo('processo')">Processo</a></li>
-      <li><a href="javascript:void(0)" onclick="navTo('depoimentos')">Depoimentos</a></li>
-      <li>
-        <a href="https://wa.me/5511995365787?text=Ol%C3%A1%2C%20Alex%21%20Quero%20agendar%20uma%20consulta%20gratuita." target="_blank" rel="noopener" class="nav-cta">Agendar Consulta</a>
-      </li>
-    </ul>
     <div class="nav-burger" id="burger" aria-label="Menu" role="button" tabindex="0">
       <span></span><span></span><span></span>
     </div>
   </nav>
+
+  <!-- Menu mobile FORA do nav (evita contaminação do backdrop-filter do nav no iOS) -->
+  <ul class="nav-links" id="navLinks">
+    <li><a href="javascript:void(0)" onclick="navTo('sobre')">Sobre</a></li>
+    <li><a href="javascript:void(0)" onclick="navTo('metodo')">Método VAR</a></li>
+    <li><a href="javascript:void(0)" onclick="navTo('servicos')">Serviços</a></li>
+    <li><a href="javascript:void(0)" onclick="navTo('processo')">Processo</a></li>
+    <li><a href="javascript:void(0)" onclick="navTo('depoimentos')">Depoimentos</a></li>
+    <li>
+      <a href="https://wa.me/5511995365787?text=Ol%C3%A1%2C%20Alex%21%20Quero%20agendar%20uma%20consulta%20gratuita." target="_blank" rel="noopener" class="nav-cta">Agendar Consulta</a>
+    </li>
+  </ul>
 
   <!-- Mobile nav backdrop -->
   <div class="nav-backdrop" id="navBackdrop"></div>
