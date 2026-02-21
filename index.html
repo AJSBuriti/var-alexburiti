@@ -131,18 +131,20 @@
 
     /* Mobile nav backdrop */
     .nav-backdrop {
-      display: none;
       position: fixed;
       inset: 0;
       z-index: 149;
-      background: rgba(0,0,0,0.65);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      background: rgba(0,0,0,0.7);
       opacity: 0;
-      transition: opacity 0.35s ease;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      pointer-events: none;
     }
-    .nav-backdrop.open { display: block; }
-    .nav-backdrop.visible { opacity: 1; }
+    .nav-backdrop.visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
 
     /* ── HERO ── */
     #hero {
@@ -932,7 +934,6 @@
       nav { padding: 1rem 1.5rem; }
       nav.scrolled { padding: 0.75rem 1.5rem; }
       .nav-links {
-        display: none;
         position: fixed;
         inset: 0;
         top: 60px;
@@ -942,22 +943,29 @@
         align-items: center;
         justify-content: center;
         gap: 2.5rem;
-        animation: none;
+        /* iOS Safari: usar opacity+visibility em vez de display:none */
+        display: flex !important;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(-8px);
+        transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
       }
-      .nav-links.open { display: flex; animation: navSlideDown 0.35s cubic-bezier(0.16,1,0.3,1) both; }
-      .nav-links.open a {
+      .nav-links.open {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+      .nav-links a {
         color: #F5F0E8 !important;
         font-size: 1.1rem !important;
         letter-spacing: 0.12em;
       }
-      .nav-links.open .nav-cta {
+      .nav-links .nav-cta {
         color: #D4A84B !important;
         border-color: #D4A84B !important;
         padding: 0.7rem 2rem !important;
-      }
-      @keyframes navSlideDown {
-        from { opacity: 0; transform: translateY(-12px); }
-        to   { opacity: 1; transform: translateY(0); }
       }
       .nav-burger { display: flex; }
       .nav-backdrop { z-index: 190; }
@@ -1590,8 +1598,7 @@
     function openMenu() {
       navLinks.classList.add('open');
       burger.classList.add('active');
-      navBackdrop.classList.add('open');
-      requestAnimationFrame(() => navBackdrop.classList.add('visible'));
+      navBackdrop.classList.add('visible');
       document.body.style.overflow = 'hidden';
     }
 
@@ -1599,11 +1606,11 @@
       navLinks.classList.remove('open');
       burger.classList.remove('active');
       navBackdrop.classList.remove('visible');
-      setTimeout(() => navBackdrop.classList.remove('open'), 350);
       document.body.style.overflow = '';
     }
 
-    burger.addEventListener('click', () => {
+    burger.addEventListener('click', (e) => {
+      e.stopPropagation();
       navLinks.classList.contains('open') ? closeMenu() : openMenu();
     });
 
