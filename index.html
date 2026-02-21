@@ -82,6 +82,19 @@
       color: var(--cream);
       text-decoration: none;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .nav-icon {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 6px rgba(184,146,74,0.35));
+      transition: filter var(--transition);
+    }
+    .nav-logo:hover .nav-icon {
+      filter: drop-shadow(0 0 10px rgba(212,168,75,0.6));
     }
     .nav-logo span { color: var(--gold2); }
 
@@ -110,8 +123,26 @@
     }
     .nav-cta:hover { background: var(--gold) !important; color: var(--dark) !important; }
 
-    .nav-burger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+    .nav-burger { display: none; cursor: pointer; flex-direction: column; gap: 5px; z-index: 201; position: relative; }
     .nav-burger span { display: block; width: 24px; height: 1.5px; background: var(--cream); transition: var(--transition); }
+    .nav-burger.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-burger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav-burger.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* Mobile nav backdrop */
+    .nav-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 149;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .nav-backdrop.open { display: block; }
+    .nav-backdrop.visible { opacity: 1; }
 
     /* ── HERO ── */
     #hero {
@@ -512,11 +543,12 @@
 
     .pilar-number {
       font-family: var(--font-serif);
-      font-size: 1rem;
+      font-size: 1.2rem;
       font-weight: 700;
       color: var(--gold);
-      letter-spacing: 0.15em;
+      letter-spacing: 0.12em;
       margin-bottom: 1rem;
+      text-transform: uppercase;
     }
     .pilar-title {
       font-family: var(--font-serif);
@@ -904,14 +936,21 @@
         position: fixed;
         inset: 0;
         top: 60px;
-        background: rgba(18,16,14,0.97);
+        z-index: 150;
+        background: rgba(18,16,14,0.98);
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 2.5rem;
         backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        animation: none;
       }
-      .nav-links.open { display: flex; }
+      .nav-links.open { display: flex; animation: navSlideDown 0.35s cubic-bezier(0.16,1,0.3,1) both; }
+      @keyframes navSlideDown {
+        from { opacity: 0; transform: translateY(-12px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
       .nav-burger { display: flex; }
 
       section { padding: 4rem 1.5rem; }
@@ -1018,7 +1057,10 @@
 
   <!-- ═══════════════════════ NAV ═══════════════════════ -->
   <nav id="navbar">
-    <a href="#hero" class="nav-logo">Alex <span>Buriti</span></a>
+    <a href="#hero" class="nav-logo">
+      <img src="IconAlex.png" alt="Ícone Alex Buriti" class="nav-icon" />
+      Alex <span>Buriti</span>
+    </a>
     <ul class="nav-links" id="navLinks">
       <li><a href="javascript:void(0)" onclick="navTo('sobre')">Sobre</a></li>
       <li><a href="javascript:void(0)" onclick="navTo('metodo')">Método VAR</a></li>
@@ -1033,6 +1075,9 @@
       <span></span><span></span><span></span>
     </div>
   </nav>
+
+  <!-- Mobile nav backdrop -->
+  <div class="nav-backdrop" id="navBackdrop"></div>
 
   <!-- ═══════════════════════ HERO ═══════════════════════ -->
   <section id="hero">
@@ -1088,7 +1133,7 @@
           <h2 class="section-title">Mais de uma <em>década</em><br>indo à raiz</h2>
           <p>
             Passei anos trabalhando com pessoas em multinacionais, atravessando culturas 
-            muito diferentes tais como: EUA, Canadá, Holanda, China, América Latina(Argentina, Paraguay e Colômbia). O que aprendi 
+            muito diferentes, como: EUA, Canadá, Holanda, China, América Latina (Argentina, Paraguai e Colômbia). O que aprendi 
             nesse percurso é que os padrões que nos limitam são os mesmos em qualquer idioma.
           </p>
           <p>
@@ -1206,7 +1251,7 @@
         <div class="pilar-card reveal">
           <div class="pilar-number">06 — Estado</div>
           <div class="pilar-title">Ancoragem de Estados</div>
-          <p class="pilar-desc">Aprenda a gravar e recuperar estados emocionais poderosos de forma instantânea, no exato momento que mais precisar.</p>
+          <p class="pilar-desc">Aprenda a gravar e recuperar estados emocionais poderosos de forma instantânea, no exato momento em que mais precisar.</p>
         </div>
       </div>
     </div>
@@ -1227,7 +1272,7 @@
           <div class="servico-badge">Treinamento</div>
           <div class="servico-title">Treinamento em PNL</div>
           <p class="servico-desc">
-            Para quem quer aprender PNL de verdade, teórico e prático. 
+            Para quem quer aprender PNL de verdade — teoria e prática. 
             Psicólogos, coaches, líderes e profissionais que precisam de ferramentas reais 
             para influenciar comportamento, comunicação e mudança. 
             Certificação incluída, método exclusivo VAR.
@@ -1257,7 +1302,7 @@
           <div class="servico-title">Processo Terapêutico com PNL e Hipnoterapia</div>
           <p class="servico-desc">
             Para quem está cansado de trabalhar os sintomas e quer chegar na causa. 
-            Ansiedade, bloqueios, traumas, padrões que se repetem, o processo vai ao 
+            Ansiedade, bloqueios, traumas, padrões que se repetem: o processo vai ao 
             programa que gera o problema, não ao problema em si. Quatro sessões com 
             estrutura clara e relatório final personalizado.
           </p>
@@ -1287,7 +1332,7 @@
           <p class="servico-desc">
             Para quem já tem clareza do que quer, mas precisa de estrutura e acompanhamento 
             para chegar lá. Trabalhamos os cinco pilares que sustentam crescimento real: 
-            emocional, físico, financeiro, relacional e gestão do tempo; Plano 
+            emocional, físico, financeiro, relacional e gestão do tempo. Plano 
             personalizado e métricas de acompanhamento.
           </p>
           <ul class="servico-features">
@@ -1320,7 +1365,7 @@
         <div class="section-tag">Como funciona</div>
         <h2 class="section-title">Um caminho com<br><em>começo, meio e fim.</em></h2>
         <p style="color:var(--muted);font-size:1.05rem;line-height:1.9">
-          Cada etapa tem propósito definido. Você sabe onde está, para onde vai 
+          Cada etapa tem um propósito definido. Você sabe onde está, para onde vai 
           e o que esperar sem improvisos, sem sessões que ficam soltas no ar.
         </p>
       </div>
@@ -1353,7 +1398,7 @@
           </div>
           <div class="step-content">
             <div class="step-title">Ressignificação nas 3 sessões seguintes</div>
-            <p class="step-desc">Com o mapa em mãos, trabalhamos direto na causa. Cada sessão tem uma direção clara. Usamos PNL e Hipnoterapia para reescrever os programas identificados não para mascarar sintomas, mas para mudar o que os gera.</p>
+            <p class="step-desc">Com o mapa em mãos, trabalhamos direto na causa. Cada sessão tem uma direção clara. Usamos PNL e Hipnoterapia para reescrever os programas identificados, não para mascarar sintomas, mas para mudar o que os gera.</p>
           </div>
         </div>
         <div class="step-item reveal">
@@ -1373,9 +1418,9 @@
   <section id="depoimentos">
     <div class="container">
       <div class="depoimentos-header reveal">
-        <div class="section-tag">Quem já passou pelo processo</div>
-        <h2 class="section-title">Resultados em<br><em>primeira pessoa</em></h2>
-        <p style="color:var(--muted)">Assista aos depoimentos de quem passou pelo Método VAR</p>
+        <div class="section-tag" style="font-size:0.85rem;font-weight:600;letter-spacing:0.18em;">Quem já passou pelo processo</div>
+        <h2 class="section-title">Resultados</h2>
+        <p style="color:var(--sand);font-size:1.15rem;font-weight:500;line-height:1.7;margin-top:0.5rem;">Assista aos depoimentos de quem passou pelo Método VAR</p>
       </div>
 
       <!-- LINHA 1 — 4 vídeos -->
@@ -1519,7 +1564,7 @@
       const el = document.getElementById(id);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        document.getElementById('navLinks').classList.remove('open');
+        closeMenu();
       }
     }
     // NAV SCROLL
@@ -1531,7 +1576,29 @@
     // BURGER
     const burger = document.getElementById('burger');
     const navLinks = document.getElementById('navLinks');
-    burger.addEventListener('click', () => navLinks.classList.toggle('open'));
+    const navBackdrop = document.getElementById('navBackdrop');
+
+    function openMenu() {
+      navLinks.classList.add('open');
+      burger.classList.add('active');
+      navBackdrop.classList.add('open');
+      requestAnimationFrame(() => navBackdrop.classList.add('visible'));
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      navLinks.classList.remove('open');
+      burger.classList.remove('active');
+      navBackdrop.classList.remove('visible');
+      setTimeout(() => navBackdrop.classList.remove('open'), 350);
+      document.body.style.overflow = '';
+    }
+
+    burger.addEventListener('click', () => {
+      navLinks.classList.contains('open') ? closeMenu() : openMenu();
+    });
+
+    navBackdrop.addEventListener('click', closeMenu);
 
     // REVEAL ON SCROLL
     const observer = new IntersectionObserver((entries) => {
