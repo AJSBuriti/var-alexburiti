@@ -133,11 +133,11 @@
     .nav-backdrop {
       position: fixed;
       inset: 0;
-      z-index: 149;
-      background: rgba(0,0,0,0.7);
+      z-index: 190;
+      background: rgba(0,0,0,0.6);
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
       pointer-events: none;
     }
     .nav-backdrop.visible {
@@ -933,42 +933,49 @@
     @media (max-width: 900px) {
       nav { padding: 1rem 1.5rem; }
       nav.scrolled { padding: 0.75rem 1.5rem; }
+
+      /* ── MENU MOBILE — solução definitiva iOS Safari ── */
       .nav-links {
+        display: flex !important;          /* sempre no DOM, nunca display:none */
         position: fixed;
-        inset: 0;
-        top: 60px;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         z-index: 200;
-        background: #12100E;
+        background: #12100E;             /* sólido, sem transparência */
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 2.5rem;
-        /* iOS Safari: usar opacity+visibility em vez de display:none */
-        display: flex !important;
-        opacity: 0;
-        visibility: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        /* fora da tela à direita quando fechado */
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-transition: -webkit-transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
         pointer-events: none;
-        transform: translateY(-8px);
-        transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
       }
       .nav-links.open {
-        opacity: 1;
-        visibility: visible;
+        transform: translateX(0);
+        -webkit-transform: translateX(0);
         pointer-events: auto;
-        transform: translateY(0);
       }
       .nav-links a {
         color: #F5F0E8 !important;
-        font-size: 1.1rem !important;
+        font-size: 1.15rem !important;
         letter-spacing: 0.12em;
+        padding: 0.5rem 1rem;
       }
       .nav-links .nav-cta {
         color: #D4A84B !important;
         border-color: #D4A84B !important;
-        padding: 0.7rem 2rem !important;
+        padding: 0.7rem 2.5rem !important;
+        font-size: 0.9rem !important;
       }
-      .nav-burger { display: flex; }
       .nav-backdrop { z-index: 190; }
+      .nav-burger { display: flex; z-index: 210; }
 
       section { padding: 4rem 1.5rem; }
       #hero { padding: 6rem 1.5rem 4rem; }
